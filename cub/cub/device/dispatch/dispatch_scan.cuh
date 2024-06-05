@@ -517,7 +517,11 @@ struct DispatchScan : SelectedPolicy
                        InitValueT,
                        OffsetT,
                        AccumT,
+<<<<<<< HEAD
                        ForceInclusive>);
+=======
+                       IsInclusive>);
+>>>>>>> 86e765b0d (Fix device inclusive scan and adapt unit test)
   }
 
   /**

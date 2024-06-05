@@ -47,6 +47,8 @@
 #include <cub/thread/thread_operators.cuh>
 #include <cub/util_deprecated.cuh>
 
+#include <cuda/std/functional>
+
 CUB_NAMESPACE_BEGIN
 
 //! @rst
