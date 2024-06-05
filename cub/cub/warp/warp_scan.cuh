@@ -534,7 +534,7 @@ public:
   //!   Calling thread's output item. May be aliased with `input`
   //!
   //! @param[in] initial_value
-  //!   Initial value to seed the inclusive scan
+  //!   Initial value to seed the inclusive scan (uniform across warp)
   //!
   //! @param[in] scan_op
   //!   Binary scan operator
