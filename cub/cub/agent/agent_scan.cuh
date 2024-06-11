@@ -141,7 +141,7 @@ template <typename AgentScanPolicyT,
           typename InitValueT,
           typename OffsetT,
           typename AccumT,
-          bool IsInclusive>
+          bool IsInclusive = false>
 struct AgentScan
 {
   //---------------------------------------------------------------------
