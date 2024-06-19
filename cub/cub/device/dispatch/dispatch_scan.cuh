@@ -172,7 +172,7 @@ template <typename ChainedPolicyT,
           typename InitValueT,
           typename OffsetT,
           typename AccumT,
-          bool IsInclusive>
+          bool ForceInclusive>
 __launch_bounds__(int(ChainedPolicyT::ActivePolicy::ScanPolicyT::BLOCK_THREADS))
   CUB_DETAIL_KERNEL_ATTRIBUTES void DeviceScanKernel(
     InputIteratorT d_in,
@@ -188,7 +188,7 @@ __launch_bounds__(int(ChainedPolicyT::ActivePolicy::ScanPolicyT::BLOCK_THREADS))
 
   // Thread block type for scanning input tiles
   using AgentScanT =
-    AgentScan<ScanPolicyT, InputIteratorT, OutputIteratorT, ScanOpT, RealInitValueT, OffsetT, AccumT, IsInclusive>;
+    AgentScan<ScanPolicyT, InputIteratorT, OutputIteratorT, ScanOpT, RealInitValueT, OffsetT, AccumT, ForceInclusive>;
 
   // Shared memory for AgentScan
   __shared__ typename AgentScanT::TempStorage temp_storage;
@@ -223,6 +223,9 @@ __launch_bounds__(int(ChainedPolicyT::ActivePolicy::ScanPolicyT::BLOCK_THREADS))
  * @tparam OffsetT
  *   Signed integer type for global offsets
  *
+ * @tparam ForceInclusive
+ *   Boolean flag to force InclusiveScan invocation when true.
+ *
  */
 template <typename InputIteratorT,
           typename OutputIteratorT,
@@ -235,7 +238,7 @@ template <typename InputIteratorT,
                                                                              typename InitValueT::value_type>,
                                                   cub::detail::value_t<InputIteratorT>>,
           typename SelectedPolicy = DeviceScanPolicy<AccumT, ScanOpT>,
-          bool IsInclusive        = false>
+          bool ForceInclusive     = false>
 struct DispatchScan : SelectedPolicy
 {
   //---------------------------------------------------------------------
@@ -514,7 +517,7 @@ struct DispatchScan : SelectedPolicy
                        InitValueT,
                        OffsetT,
                        AccumT,
-                       IsInclusive>);
+                       ForceInclusive>);
   }
 
   /**
