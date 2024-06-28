@@ -112,6 +112,27 @@ struct inclusive_scan_fn final
       THRUST_FWD(out),
       thrust::plus<>{}))
 
+      template <typename DerivedPolicy,
+                typename ForwardIt,
+                typename Sentinel,
+                typename OutputIt,
+                typename InitialValueType,
+                typename BinaryOp>
+      auto operator()(thrust::detail::execution_policy_base<DerivedPolicy> const& exec,
+                      ForwardIt&& first,
+                      Sentinel&& last,
+                      OutputIt&& out,
+                      InitialValueType&& init,
+                      BinaryOp&& op) const
+    // ADL dispatch.
+    THRUST_RETURNS(async_inclusive_scan(
+      thrust::detail::derived_cast(thrust::detail::strip_const(exec)),
+      THRUST_FWD(first),
+      THRUST_FWD(last),
+      THRUST_FWD(out),
+      THRUST_FWD(init),
+      THRUST_FWD(op)))
+
       template <typename ForwardIt,
                 typename Sentinel,
                 typename OutputIt,
