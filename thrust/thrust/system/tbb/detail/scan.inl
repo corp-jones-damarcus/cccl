@@ -56,11 +56,11 @@ struct inclusive_body
   ValueType sum;
   bool first_call;
 
-  inclusive_body(InputIterator input, OutputIterator output, BinaryFunction binary_op, ValueType dummy)
+  inclusive_body(InputIterator input, OutputIterator output, BinaryFunction binary_op, ValueType init)
       : input(input)
       , output(output)
       , binary_op(binary_op)
-      , sum(dummy)
+      , sum(init)
       , first_call(true)
   {}
 
@@ -242,6 +242,30 @@ inclusive_scan(tag, InputIterator first, InputIterator last, OutputIterator resu
   {
     typedef typename scan_detail::inclusive_body<InputIterator, OutputIterator, BinaryFunction, ValueType> Body;
     Body scan_body(first, result, binary_op, *first);
+    ::tbb::parallel_scan(::tbb::blocked_range<Size>(0, n), scan_body);
+  }
+
+  thrust::advance(result, n);
+
+  return result;
+}
+
+template <typename InputIterator, typename OutputIterator, typename InitialValueType, typename BinaryFunction>
+OutputIterator inclusive_scan(
+  tag, InputIterator first, InputIterator last, OutputIterator result, InitialValueType init, BinaryFunction binary_op)
+{
+  using namespace thrust::detail;
+
+  // Use the input iterator's value type per https://wg21.link/P0571
+  using ValueType = InitialValueType;
+
+  using Size = typename thrust::iterator_difference<InputIterator>::type;
+  Size n     = thrust::distance(first, last);
+
+  if (n != 0)
+  {
+    typedef typename scan_detail::inclusive_body<InputIterator, OutputIterator, BinaryFunction, ValueType> Body;
+    Body scan_body(first, result, binary_op, init);
     ::tbb::parallel_scan(::tbb::blocked_range<Size>(0, n), scan_body);
   }
 
